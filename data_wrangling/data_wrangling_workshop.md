@@ -4,6 +4,10 @@ Data Wrangling in R - Workshop
 How to get set up for this workshop
 -----------------------------------
 
+### Our virtual space:
+
+<https://todaysmeet.com/wwc_wrangling>
+
 ### Getting this document on your computer:
 
 1.  Go to the GitHub repository here: <https://github.com/davidklaing/data_science_workshops>
@@ -27,6 +31,14 @@ How to get set up for this workshop
 #install.packages("ggplot2")
 #install.packages("titanic")
 ```
+
+### Having installation problems?
+
+Option 1: Ask for help! We have volunteers who can help troubleshoot.
+
+Option 2a: Find a partner and follow along together — most of the exercises can be done collaboratively. Your installation problem is almost certainly solvable — we just might not have time today.
+
+Option 2b: Use [this datacamp light](https://cdn.datacamp.com/dcl/standalone-example.html) page to write and execute code in your browser. (A couple caveats: doesn't come with the titanic data, and might end up distracting you from the lesson. If this is your first time programming, I recommend option 2a.)
 
 Ready to rock!!!
 ----------------
