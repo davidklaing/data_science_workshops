@@ -49,7 +49,7 @@ Today, we're going to be working just with tabular data — arranged in rows and
 -   Rmarkdown, the file format we're working in, allows us to write and execute code snippets, while also writing [markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet), a plain text format that allows for simple rendering of headings, bold, italics, hyperlinks, etc.
 -   Analogy: Rstudio is to Rmarkdown as Microsoft Word is to .docx.
 
-Quick tip for writing and executing code in RStudio: to execute a line of code, move your cursor to that line and then type `Ctrl-Enter`. For example:
+Quick tip for writing and executing code in RStudio: to execute a line of code, move your cursor to that line and then type `Ctrl+Enter`. For example:
 
 ``` r
 # Move your cursor to the line below, and type Ctrl-Enter.
@@ -126,8 +126,7 @@ A variable is something we use to store data, with whatever name we like.
 # Let's store the `titanic_train` dataframe in a `df` (short for "dataframe").
 df <- titanic_train
 
-# Of course, we can store any data in a variable. Let's set `variable1` equal to
-# 6. Notice that we use `<-` to assign values to variables.
+# Of course, we can store any data in a variable. Let's set `variable1` equal to 6.
 variable1 <- 6
 
 # Now if we add 1 to `variable1`, we should get 7.
@@ -135,6 +134,8 @@ variable1 <- 6
 ```
 
     ## [1] 7
+
+Quick tip for writing code in RStudio! Notice that we use `<-` to assign values to variables. We could also have used `=`, but most style guides recommend using `<-` for variable assignment. There is a hot-key for quickly typing this: `Alt+-`. Let's try!
 
 We can also use functions. These look a lot like variables, except that they're always followed by parentheses, in which we can insert arguments.
 
@@ -223,6 +224,10 @@ example_dataframe %>%
     ## 4 English
     ## 5    Math
     ## 6    Math
+
+Quick tip for writing code in RStudio: the hot-key for the pipe operator is `Cmd+Shift+M`. Let's practice!
+
+When you read R code that uses the pipe, think of the pipe as the word "then". So, the code below would be read as "start with `example_dataframe`, *then* select `student` and `final_grade`."
 
 ``` r
 # Now let's select the `student` column and the `final_grade` column.
@@ -745,7 +750,7 @@ example_dataframe %>% # First we pipe in the dataframe of interest.
   geom_point() # Finally, we specify a geometric object to represent each observation.
 ```
 
-![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-24-1.png)
+![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-27-1.png)
 
 ``` r
 # Let's look at a histogram of Age.
@@ -762,7 +767,7 @@ df %>%
 
     ## Warning: Removed 177 rows containing non-finite values (stat_bin).
 
-![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-24-2.png)
+![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-27-2.png)
 
 ``` r
 # Let's see a density plot of Fare.
@@ -771,7 +776,7 @@ df %>%
   geom_density()
 ```
 
-![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-24-3.png)
+![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-27-3.png)
 
 ### Practice time with `ggplot()`!
 
@@ -787,7 +792,7 @@ df %>%
   geom_point(alpha = 0.5)
 ```
 
-![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-25-1.png)
+![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-28-1.png)
 
 Awesome!
 
@@ -804,7 +809,7 @@ df_summarised %>%
   facet_wrap(~Pclass)
 ```
 
-![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-26-1.png)
+![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-29-1.png)
 
 Ta-da! It looks like there's a pretty consistent trend: the older you were, the less likely you were to survive. Moreover, the lesser your passenger class (the higher the number), the less likely you were to survive.
 
@@ -831,7 +836,7 @@ df %>%
   facet_wrap(~Pclass) # And split the graph into three facets!
 ```
 
-![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-27-1.png)
+![](data_wrangling_workshop_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-30-1.png)
 
 ``` r
 sessionInfo()

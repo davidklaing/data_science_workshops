@@ -53,7 +53,7 @@ Today, we're going to be working just with tabular data — arranged in rows and
 * Rmarkdown, the file format we're working in, allows us to write and execute code snippets, while also writing [markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet), a plain text format that allows for simple rendering of headings, bold, italics, hyperlinks, etc.
 * Analogy: Rstudio is to Rmarkdown as Microsoft Word is to .docx.
 
-Quick tip for writing and executing code in RStudio: to execute a line of code, move your cursor to that line and then type `Ctrl-Enter`. For example:
+Quick tip for writing and executing code in RStudio: to execute a line of code, move your cursor to that line and then type `Ctrl+Enter`. For example:
 
 ```{r}
 # Move your cursor to the line below, and type Ctrl-Enter.
@@ -90,12 +90,17 @@ A variable is something we use to store data, with whatever name we like.
 # Let's store the `titanic_train` dataframe in a `df` (short for "dataframe").
 df <- titanic_train
 
-# Of course, we can store any data in a variable. Let's set `variable1` equal to
-# 6. Notice that we use `<-` to assign values to variables.
+# Of course, we can store any data in a variable. Let's set `variable1` equal to 6.
 variable1 <- 6
 
 # Now if we add 1 to `variable1`, we should get 7.
 1 + variable1
+```
+
+Quick tip for writing code in RStudio! Notice that we use `<-` to assign values to variables. We could also have used `=`, but most style guides recommend using `<-` for variable assignment. There is a hot-key for quickly typing this: `Alt+-`. Let's try!
+
+```{r}
+
 ```
 
 We can also use functions. These look a lot like variables, except that they're always followed by parentheses, in which we can insert arguments.
@@ -149,7 +154,17 @@ to chain commands together without storing intermediate results.
 # The above code gives the same result as this:
 example_dataframe %>% 
   select(course)
+```
 
+Quick tip for writing code in RStudio: the hot-key for the pipe operator is `Cmd+Shift+M`. Let's practice!
+
+```{r}
+
+```
+
+When you read R code that uses the pipe, think of the pipe as the word "then". So, the code below would be read as "start with `example_dataframe`, *then* select `student` and `final_grade`."
+
+```{r}
 # Now let's select the `student` column and the `final_grade` column.
 example_dataframe %>% 
   select(student, final_grade)
