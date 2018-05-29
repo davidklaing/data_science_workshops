@@ -1,0 +1,91 @@
+---
+title: "Applied Statistics for Data Science"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## How to get set up for this workshop
+
+### Our virtual space:
+
+[https://todaysmeet.com/wwc_stats](https://todaysmeet.com/wwc_stats)
+
+### Getting this document on your computer:
+
+1. Go to the GitHub repository here: [https://github.com/davidklaing/data_science_workshops](https://github.com/davidklaing/data_science_workshops)
+2. Click the green button on the right that says "Clone or download".
+3. Click "Download ZIP". (If you're proficient with git, feel free to clone the repository.)
+4. Create a folder on your computer to store your work, and store your ZIP file there.
+5. Double-click your ZIP file to unzip it and get all the code.
+
+### Getting R and Rstudio
+
+1. Download and install R from here: [http://cran.stat.sfu.ca/](http://cran.stat.sfu.ca/).
+2. Download and install RStudio Desktop (Open Source Edition) from here: [https://www.rstudio.com/products/rstudio/#Desktop](https://www.rstudio.com/products/rstudio/#Desktop).
+
+### Getting ready to play!
+
+1. In RStudio, open `applied_statistics.Rmd`, a file in `YOUR_FOLDER/data_science_workshops/applied_statistics`. (That's this file!)
+2. In the code snippet below, remove the hashtags from both lines, and click the green "play" button on the right to install `dplyr`, `ggplot2`, and `titanic`, the three packages you'll need for the workshop.
+
+```{r}
+#install.packages("dplyr")
+#install.packages("ggplot2")
+#install.packages("titanic")
+
+library(dplyr)
+library(ggplot2)
+```
+
+### Having installation problems?
+
+Option 1: Ask for help! We have volunteers who can help troubleshoot.
+
+Option 2a: Find a partner and follow along together — most of the exercises can be done collaboratively. Your installation problem is almost certainly solvable — we just might not have time today.
+
+Option 2b: Use [this datacamp light](https://cdn.datacamp.com/dcl/standalone-example.html) page to write and execute code in your browser. (A couple caveats: doesn't come with the titanic data, and might end up distracting you from the lesson. If this is your first time programming, I recommend option 2a.)
+
+## A challenge of inference
+
+Let's generate some data. Don't worry yet about how it's being generated — all you need to know is that there's a random process that determines which numbers are most likely, and I'm defining that random process with this function.
+
+```{r}
+my_sample_df <- data_frame(
+  some_variable = rpois(n = 100, lambda = 4)
+)
+```
+
+Let's take a peak at this sample we've generated.
+
+```{r}
+my_sample_df
+```
+
+Our first insight: even with a sample as small as this, it's pretty hard to summarize what we've learned from this data. 
+
+```{r}
+t.test(my_sample_df$some_variable, alternative = "greater", mu = 3)
+```
+
+
+```{r}
+my_sample_df %>% 
+  ggplot() +
+  geom_histogram(aes(x = some_variable), binwidth = 1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
