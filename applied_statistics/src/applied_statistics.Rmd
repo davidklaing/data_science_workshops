@@ -48,42 +48,78 @@ Option 2a: Find a partner and follow along together — most of the exercises ca
 
 Option 2b: Use [this datacamp light](https://cdn.datacamp.com/dcl/standalone-example.html) page to write and execute code in your browser. (A couple caveats: doesn't come with the titanic data, and might end up distracting you from the lesson. If this is your first time programming, I recommend option 2a.)
 
-## A challenge of inference
+## Warm-up exercise — in pairs
 
-Let's generate some data. Don't worry yet about how it's being generated — all you need to know is that there's a random process that determines which numbers are most likely, and I'm defining that random process with this function.
+The code snippet below reads in a CSV file with just one column — a vector of numbers. Recalling what you may have learned in the previous workshop, try visualizing these numbers to get a sense of their distribution. To consider:
 
-```{r}
-my_sample_df <- data_frame(
-  some_variable = rpois(n = 100, lambda = 4)
-)
-```
-
-Let's take a peak at this sample we've generated.
+- What type(s) of plots might be appropriate in this case? 
+- If you had to summarize the sample numerically, what would you do?
+- Say we draw one more number from the same process that generated this sample — what would you predict would be its value?
+- Say we draw 100,000 more numbers from the same process that generated this sample — what would you predict about their values?
 
 ```{r}
-my_sample_df
+sample_df <- readr::read_csv("../data/sample_df.csv")
+
+# Write your code here!
 ```
 
-Our first insight: even with a sample as small as this, it's pretty hard to summarize what we've learned from this data. 
+## The most common statistical tasks in data science
 
-```{r}
-t.test(my_sample_df$some_variable, alternative = "greater", mu = 3)
-```
+1. Understanding the distribution of a sample.
+2. Summarizing information about a sample.
+3. Predicting the future.
+4. Characterizing the unknown.
 
+## 1. Understanding the distribution of a sample
 
-```{r}
-my_sample_df %>% 
-  ggplot() +
-  geom_histogram(aes(x = some_variable), binwidth = 1)
-```
+Key concepts:
 
+- Histograms
+- Density plots
+- Boxplots
+- Bar plots
 
+Useful R functions:
 
+- `ggplot()`, `geom_histogram()`, `geom_density()`, `geom_boxplot()` `geom_bar()`
 
+Common ways to fool yourself:
 
+- Viewing your distribution at the wrong level of aggregation
+- Overlaying group distributions on an unaligned scale 
 
+## 2. Summarizing information about a sample
 
+Key concepts:
 
+- Measures of location — mean, median, (less commonly) mode
+- Measures of spread — standard deviation, variance, maximum, minimum, percentiles
+
+Useful R functions:
+
+- `summary()`, `mean()`, `median()`, `sd()`, `var()`, `max()`, `min()`, `quantile()`
+
+## 3. Predicting the future
+
+Key concepts:
+
+- Expected value, error minimization
+
+Useful R functions:
+
+- `mean()`
+
+...more to come next month, when we discuss machine learning!
+
+## 4. Characterizing the unknown (a.k.a. *inference*)
+
+Key concepts:
+
+- Sample, population, maximum likelihood estimation, hypothesis test, bootstrap
+
+Useful R functions:
+
+- `t.test()`
 
 
 
