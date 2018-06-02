@@ -101,8 +101,8 @@ The most common statistical tasks in data science
 3.  Predicting the future. (prediction)
 4.  Characterizing the unknown. (inference)
 
-1. Understanding the distribution of a sample
----------------------------------------------
+Understanding the distribution of a sample
+------------------------------------------
 
 Key concepts:
 
@@ -123,8 +123,8 @@ Make two plots from the `titanic_train` dataset, from the `titanic` package: one
 # Plot of Age
 ```
 
-2. Summarizing information about a sample
------------------------------------------
+Summarizing information about a sample
+--------------------------------------
 
 Key concepts:
 
@@ -161,8 +161,8 @@ Compare the various measures of spread (standard deviation, variance, median abs
 # Compute the median absolute deviation of Fare
 ```
 
-3. Predicting the future
-------------------------
+Predicting the future
+---------------------
 
 Key concepts:
 
@@ -184,8 +184,8 @@ Challenge: compute the mean of Age in `titanic_train`, and then use that to pred
 # In titanic_test, you should now have a column called `Age` and a column called `predicted_age` (or something like it). Try to think of a way to report back on how good your predictions were!
 ```
 
-4. Characterizing the unknown (a.k.a. *inference*)
---------------------------------------------------
+Characterizing the unknown (a.k.a. *inference*)
+-----------------------------------------------
 
 ![](img/probability_vs_statistics.png)
 
@@ -221,4 +221,4 @@ for (i in 1:10000) {
 mean(sample_mean_tests)
 ```
 
-    ## [1] 0.453
+    ## [1] 0.4447
