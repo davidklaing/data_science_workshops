@@ -28,7 +28,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Getting ready to play!
 
-1. In RStudio, open `applied_statistics.Rmd`, a file in `YOUR_FOLDER/data_science_workshops/applied_statistics`. (That's this file!)
+1. In RStudio, open `applied_statistics.Rmd`, a file in `YOUR_FOLDER/data_science_workshops/applied_statistics/src/`. (That's this file!)
 2. In the code snippet below, remove the hashtags from both lines, and click the green "play" button on the right to install `dplyr`, `ggplot2`, and `titanic`, the three packages you'll need for the workshop.
 
 ```{r}
@@ -38,6 +38,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 library(ggplot2)
+library(titanic)
 ```
 
 ### Having installation problems?
@@ -65,39 +66,71 @@ sample_df <- readr::read_csv("../data/sample_df.csv")
 
 ## The most common statistical tasks in data science
 
-1. Understanding the distribution of a sample.
-2. Summarizing information about a sample.
-3. Predicting the future.
-4. Characterizing the unknown.
+1. Understanding the distribution of a sample. (exploratory data analysis)
+2. Summarizing information about a sample. (description)
+3. Predicting the future. (prediction)
+4. Characterizing the unknown. (inference)
 
 ## 1. Understanding the distribution of a sample
 
 Key concepts:
 
-- Histograms
-- Density plots
-- Boxplots
-- Bar plots
+- Histograms, density plots, boxplots, bar plots
 
 Useful R functions:
 
 - `ggplot()`, `geom_histogram()`, `geom_density()`, `geom_boxplot()` `geom_bar()`
 
-Common ways to fool yourself:
+### Let's try!
 
-- Viewing your distribution at the wrong level of aggregation
-- Overlaying group distributions on an unaligned scale 
+Make two plots from the `titanic_train` dataset, from the `titanic` package: one of the `Fare` variable, and one of the `Age` variable. What can you say about the shapes of these distributions?
+
+```{r}
+# Plot of Fare
+
+
+# Plot of Age
+
+```
+
 
 ## 2. Summarizing information about a sample
 
 Key concepts:
 
 - Measures of location — mean, median, (less commonly) mode
-- Measures of spread — standard deviation, variance, maximum, minimum, percentiles
+- Measures of spread — standard deviation, variance, mean absolute deviation, maximum, minimum, percentiles
 
 Useful R functions:
 
-- `summary()`, `mean()`, `median()`, `sd()`, `var()`, `max()`, `min()`, `quantile()`
+- `summarize()` `summary()`, `mean()`, `median()`, `sd()`, `var()`, `max()`, `min()`, `quantile()`
+
+### Let's try!
+
+Compute the mean and the median of the `Fare` variable in `titanic_train`. Which seems like a better description of the central tendency of the distribution?
+
+- Bonus challenge: use `geom_vline()` or `geom_hline()` to add both metrics to the plot you created above!
+
+```{r}
+# Compute the mean and median of the fare paid by passengers of the titanic
+
+```
+
+Now do the same for the `Age` variable. Which seems like a better description of the central tendency of the distribution?
+
+```{r}
+# Compute the mean and median age of passengers of the titanic
+```
+
+Compare the various measures of spread (standard deviation, variance, mean absolute deviation) on the Fare variable. Which one seems most useful, descriptively? (Try to keep track of the units that each measure is expressed in.)
+
+```{r}
+# Compute the standard deviation of Fare
+
+# Compute the variance of Fare
+
+# Compute the mean absolute deviation of Fare
+```
 
 ## 3. Predicting the future
 
@@ -110,6 +143,16 @@ Useful R functions:
 - `mean()`
 
 ...more to come next month, when we discuss machine learning!
+
+Challenge: compute the mean of Age in `titanic_train`, and then use that to predict the value of `Age` in `titanic_test` — add a prediction column using `mutate()`. How would you quantify the quality of your predictions?
+
+```{r}
+# Compute the mean of Age in titanic_train
+
+# Use `mutate()` to add the mean of Age in titanic_train to a new column in titanic_test
+
+# In titanic_test, you should now have a column called `Age` and a column called `predicted_age` (or something like it). Try to think of a way to report back on how good your predictions were!
+```
 
 ## 4. Characterizing the unknown (a.k.a. *inference*)
 
