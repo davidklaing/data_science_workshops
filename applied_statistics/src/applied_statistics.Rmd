@@ -93,17 +93,16 @@ Make two plots from the `titanic_train` dataset, from the `titanic` package: one
 
 ```
 
-
 ## 2. Summarizing information about a sample
 
 Key concepts:
 
-- Measures of location — mean, median, (less commonly) mode
-- Measures of spread — standard deviation, variance, mean absolute deviation, maximum, minimum, percentiles
+- Measures of central tendency (location) — mean, median, (less commonly) mode
+- Measures of spread — standard deviation, variance, mean/median absolute deviation, maximum, minimum, percentiles
 
 Useful R functions:
 
-- `summarize()` `summary()`, `mean()`, `median()`, `sd()`, `var()`, `max()`, `min()`, `quantile()`
+- `summarize()` `summary()`, `mean()`, `median()`, `sd()`, `var()`, `mad()`, `max()`, `min()`, `quantile()`
 
 ### Let's try!
 
@@ -122,14 +121,15 @@ Now do the same for the `Age` variable. Which seems like a better description of
 # Compute the mean and median age of passengers of the titanic
 ```
 
-Compare the various measures of spread (standard deviation, variance, mean absolute deviation) on the Fare variable. Which one seems most useful, descriptively? (Try to keep track of the units that each measure is expressed in.)
+Compare the various measures of spread (standard deviation, variance, median absolute deviation) on the Fare variable. Which one seems most useful, descriptively? (Try to keep track of the units that each measure is expressed in.)
 
 ```{r}
 # Compute the standard deviation of Fare
 
 # Compute the variance of Fare
 
-# Compute the mean absolute deviation of Fare
+# Compute the median absolute deviation of Fare
+
 ```
 
 ## 3. Predicting the future
@@ -156,13 +156,40 @@ Challenge: compute the mean of Age in `titanic_train`, and then use that to pred
 
 ## 4. Characterizing the unknown (a.k.a. *inference*)
 
+![](img/probability_vs_statistics.png)
+
+Image by MIT OpenCourseWare. Based on Gilbert, Norma. Statistics. Philadelphia, PA: W. B. Saunders Co., 1976. ISBN: 072164127X.
+
+Questions to check your understanding:
+
+- I flip a coin 100 times and find that it lands heads 53 times. I want to know whether this is a fair coin. Am I doing probability or statistics?
+- I'm counting cards at a blackjack table in a casino. Am I doing probability or statistics? 
+
 Key concepts:
 
-- Sample, population, maximum likelihood estimation, hypothesis test, bootstrap
+- Sample, population, probability, hypothesis test
 
-Useful R functions:
+A quick demonstration: does the original sample (at the beginning of the workshop) provide evidence that it was drawn from a distribution with a mean of greater than zero?
 
-- `t.test()`
+```{r}
+original_mean <- mean(sample_df$sample_data)
+original_sd <- sd(sample_df$sample_data)
+
+sample_means <- c()
+sample_mean_tests <- c()
+
+for (i in 1:10000) {
+  new_sample <- rnorm(50, 0, original_sd)
+  new_sample_mean <- mean(new_sample)
+  sample_means <- append(sample_means, new_sample_mean)
+  
+  sample_mean_test <- new_sample_mean >= original_mean
+  sample_mean_tests <- append(sample_mean_tests, sample_mean_test)
+}
+
+mean(sample_mean_tests)
+```
+
 
 
 
