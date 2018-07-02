@@ -59,9 +59,26 @@ The code snippet below reads in a CSV file with just one column — a vector of 
 - Say we draw 100,000 more numbers from the same process that generated this sample — what would you predict about their values?
 
 ```{r}
-sample_df <- readr::read_csv("../data/sample_df.csv")
-
+sample_df <- read.csv("../data/sample_df.csv")
+sample_df
 # Write your code here!
+hist(sample_df$sample_data)
+
+ggplot(
+  data = sample_df,
+  mapping = aes(x = sample_data)
+) +
+  geom_histogram(bins = 5)
+
+ggplot(
+  data = sample_df
+) +
+  geom_boxplot(mapping = aes(y = sample_data, x = ""))
+
+ggplot(
+  data = sample_df
+) +
+  geom_density(aes(x = sample_data))
 ```
 
 ## The most common statistical tasks in data science
@@ -87,10 +104,14 @@ Make two plots from the `titanic_train` dataset, from the `titanic` package: one
 
 ```{r}
 # Plot of Fare
-
+titanic_train %>%
+  ggplot(mapping = aes(x = Fare)) +
+  geom_histogram(bins=20)
 
 # Plot of Age
-
+titanic_train %>%
+  ggplot(mapping = aes(x = Age)) +
+  geom_histogram(bins = 20)
 ```
 
 ## Summarizing information about a sample
@@ -112,7 +133,27 @@ Compute the mean and the median of the `Fare` variable in `titanic_train`. Which
 
 ```{r}
 # Compute the mean and median of the fare paid by passengers of the titanic
+mean_of_fare <- mean(titanic_train$Fare)
+median_of_fare <- median(titanic_train$Fare)
+central_tendency_stats <- titanic_train %>% 
+  summarise(
+    mean_of_age = mean(Age, na.rm = TRUE),
+    median_of_age = median(Age, na.rm = TRUE)
+  )
 
+titanic_train %>%
+  ggplot(mapping = aes(x = Age)) +
+  geom_histogram(bins = 20) +
+  geom_vline(
+    data = central_tendency_stats,
+    aes(xintercept = mean_of_age),
+    color = "red"
+  ) +
+  geom_vline(
+    data = central_tendency_stats,
+    aes(xintercept = median_of_age),
+    color = "blue"
+  )
 ```
 
 Now do the same for the `Age` variable. Which seems like a better description of the central tendency of the distribution?
@@ -130,6 +171,12 @@ Compare the various measures of spread (standard deviation, variance, median abs
 
 # Compute the median absolute deviation of Fare
 
+titanic_train %>% 
+  summarise(
+    sd_of_fare = sd(Fare),
+    var_of_fare = var(Fare),
+    mad_of_fare = mad(Fare)
+  )
 ```
 
 ## Predicting the future
@@ -148,10 +195,19 @@ Challenge: compute the mean of Age in `titanic_train`, and then use that to pred
 
 ```{r}
 # Compute the mean of Age in titanic_train
+mean_of_age <- mean(titanic_train$Age, na.rm = T)
 
 # Use `mutate()` to add the mean of Age in titanic_train to a new column in titanic_test
+test_mutated <- titanic_test %>% 
+  mutate(
+    age_prediction = mean_of_age
+  ) %>% 
+  select(Age, age_prediction)
 
 # In titanic_test, you should now have a column called `Age` and a column called `predicted_age` (or something like it). Try to think of a way to report back on how good your predictions were!
+test_mutated %>% 
+  mutate(prediction_error = age_prediction - Age) %>% 
+  summarize(mean(abs(prediction_error), na.rm = T))
 ```
 
 ## Characterizing the unknown (a.k.a. *inference*)
