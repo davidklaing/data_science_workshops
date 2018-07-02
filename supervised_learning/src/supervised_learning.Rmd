@@ -1,0 +1,131 @@
+---
+title: "Supervised Learning"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## How to get set up for this workshop
+
+### Our virtual space:
+
+[https://todaysmeet.com/wwc_stats](https://todaysmeet.com/wwc_stats)****FIX
+
+### Getting this document on your computer:
+
+1. Go to the GitHub repository here: [https://github.com/davidklaing/data_science_workshops](https://github.com/davidklaing/data_science_workshops)
+2. Click the green button on the right that says "Clone or download".
+3. Click "Download ZIP". (If you're proficient with git, feel free to clone the repository.)
+4. Create a folder on your computer to store your work, and store your ZIP file there.
+5. Double-click your ZIP file to unzip it and get all the code.
+
+### Getting R and Rstudio
+
+1. Download and install R from here: [http://cran.stat.sfu.ca/](http://cran.stat.sfu.ca/).
+2. Download and install RStudio Desktop (Open Source Edition) from here: [https://www.rstudio.com/products/rstudio/#Desktop](https://www.rstudio.com/products/rstudio/#Desktop).
+
+### Getting ready to play!
+
+1. In RStudio, open `supervised_learning.Rmd`, a file in `YOUR_FOLDER/data_science_workshops/supervised_learning/src/`. (That's this file!)
+2. In the code snippet below, remove the hashtags from both lines, and click the green "play" button on the right to install `dplyr`, `ggplot2`, and `titanic`, the three packages you'll need for the workshop.
+
+```{r}
+#install.packages("dplyr")
+#install.packages("ggplot2")
+#install.packages("titanic")
+
+library(dplyr)
+library(ggplot2)
+library(titanic)
+```
+
+### Having installation problems?
+
+Option 1: Ask for help! We have volunteers who can help troubleshoot.
+
+Option 2a: Find a partner and follow along together — most of the exercises can be done collaboratively. Your installation problem is almost certainly solvable — we just might not have time today.
+
+Option 2b: Use [this datacamp light](https://cdn.datacamp.com/dcl/standalone-example.html) page to write and execute code in your browser. (A couple caveats: doesn't come with the titanic data, and might end up distracting you from the lesson. If this is your first time programming, I recommend option 2a.)
+
+## Warm-up exercise (in pairs)
+
+Based on the graphs below, how would you predict future values of $y$ knowing only the corresponding values of $x$?
+
+```{r}
+df1 <- data_frame(
+  x = c(0,1.4,2,3.7,4,5.1,6,7.5,8.4,9.7),
+  y = c(1,1,1,1,1,3,3,3,3,3)
+)
+
+df1 %>% 
+  ggplot() +
+  geom_point(
+    aes(x = x, y = y)
+  ) +
+  scale_y_continuous(
+    limits = c(0,4),
+    breaks = c(0,1,2,3,4)
+  ) +
+  scale_x_continuous(
+    breaks = c(0,1,2,3,4,5,6,7,8,9,10)
+  ) +
+  labs(
+    title = "Graph 1"
+  )
+```
+
+```{r}
+df2 <- data_frame(
+  x = c(0,1.1,2,3.3,4.4,5,6.2,7.7,8.1,9),
+  y = c(0,2.2,4,6.6,8.8,10,12.4,15.2,16.2,18)
+)
+
+df2 %>% 
+  ggplot() +
+  geom_point(
+    aes(x = x, y = y)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0,20,2)
+  ) +
+  scale_x_continuous(
+    breaks = c(0,1,2,3,4,5,6,7,8,9,10)
+  ) +
+  labs(
+    title = "Graph 2"
+  )
+```
+
+```{r}
+df2 <- data_frame(
+  x = c(0,1.1,2,3.3,4.4,5,6.2,7.7,8.1,9),
+  y = c(1.1,1.3,0.9,0.87,8.8,8.4,7.4,6,6.4,6.9)
+)
+
+df2 %>% 
+  ggplot() +
+  geom_point(
+    aes(x = x, y = y)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0,20,2)
+  ) +
+  scale_x_continuous(
+    breaks = c(0,1,2,3,4,5,6,7,8,9,10)
+  ) +
+  labs(
+    title = "Graph 3"
+  )
+```
+
+## Supervised learning
+
+What it is
+
+Why it's useful
+
+How to do it
+
+
