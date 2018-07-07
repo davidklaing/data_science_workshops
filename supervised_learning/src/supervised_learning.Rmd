@@ -4,6 +4,7 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
+#install.packages("knitr")
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -11,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Our virtual space:
 
-[http://backchannelchat.com/Backchannel/l9yzy](http://backchannelchat.com/Backchannel/l9yzy)****FIX
+[http://backchannelchat.com/Backchannel/l9yzy](http://backchannelchat.com/Backchannel/l9yzy)
 
 ### Getting this document on your computer:
 
@@ -51,6 +52,21 @@ Option 2a: Find a partner and follow along together — most of the exercises ca
 
 Option 2b: Use [this datacamp light](https://cdn.datacamp.com/dcl/standalone-example.html) page to write and execute code in your browser. (A couple caveats: doesn't come with the titanic data, and might end up distracting you from the lesson. If this is your first time programming, I recommend option 2a.)
 
+## Rstudio review
+
+Executing code: move your cursor to the line you want to execute, and hit CTRL+ENTER
+
+```{r}
+print("hello!")
+1+1
+```
+
+Looking up documentation about a function or object: prepend the name of the object with a question mark, and execute that line.
+
+```{r}
+print
+```
+
 ## Supervised Learning
 
 In most programming:
@@ -89,7 +105,7 @@ learned_function <- function(inputs, outputs, new_input) {
 learned_function(
   inputs = c(2, 5, 0),
   outputs = c(3, 6, 1),
-  new_input = 0
+  new_input = 3
 )
 ```
 
@@ -119,13 +135,19 @@ df1_train %>%
   labs(
     title = "Graph 1"
   )
+
+df1_train %>% 
+  ggplot() +
+  geom_histogram(
+    aes(x = y)
+  )
 ```
 
 Write your function in the code snippet below.
 
 ```{r}
 predict1 <- function(x) {
-  # Your answer here!
+  return(x*2)
 }
 
 df1_test <- data_frame(
@@ -186,8 +208,21 @@ See if you can represent this new dataset with a different function.
 Hint: you will need to use an `if` clause.
 
 ```{r}
+if (1 == 2) {
+  print("hello")
+} else {
+  print("The first clause was false!")
+}
+```
+
+
+```{r}
 predict2 <- function(x) {
-  # Your answer here!
+  if (x < 4.5) {
+    return(1)
+  } else {
+    return(3)
+  }
 }
 
 df2_test <- data_frame(
@@ -238,13 +273,78 @@ df3_train %>%
 By eyeballing the data, write your function in the snippet below. Once you're done, think about how you might evaluate the quality of your function. Can you come up with a measurement that you could use to compare your function to one written by someone else?
 
 ```{r}
-predict3 <- function(x) {
-  # your function here!
+tania_predict <- function(x) {
+  return(x*x)
 }
+
+cerize_predict <- function(x) {
+  return(20*x - 100)
+}
+
+steffi_predict <- function(x) {
+  return(x^2 - x*2)
+}
+
+df3_train %>% 
+  mutate(
+    tania_prediction = map_dbl(x, tania_predict),
+    cerize_prediction = map_dbl(x, cerize_predict),
+    steffi_prediction = map_dbl(x, steffi_predict)
+  ) %>% 
+  ggplot() +
+  geom_point(aes(x = x, y = y), color = "red") +
+  geom_point(aes(x = x, y = tania_prediction), color = "blue") +
+  geom_point(aes(x = x, y = cerize_prediction), color = "pink") +
+  geom_point(aes(x = x, y = steffi_prediction), color = "purple")
 
 # How could you evaluate the quality of your function??
 ```
 
+```{r}
+df3_train %>% 
+  mutate(
+    tania_prediction = map_dbl(x, tania_predict),
+    cerize_prediction = map_dbl(x, cerize_predict),
+    steffi_prediction = map_dbl(x, steffi_predict)
+  ) %>%
+  mutate(
+    tania_error = tania_prediction - y,
+    cerize_error = cerize_prediction - y,
+    steffi_error = steffi_prediction - y
+  ) %>% 
+  summarise(
+    mean_squared_tania_error = mean(tania_error^2),
+    mean_squared_cerize_error = mean(cerize_error^2),
+    mean_squared_steffi_error = mean(steffi_error^2),
+  )
+```
+
+```{r}
+df3_test <- read.csv("../data/df3_test.csv")
+
+df3_test %>% 
+  ggplot() +
+  geom_point(
+    aes(x = x, y = y)
+  )
+
+df3_test %>% 
+  mutate(
+    tania_prediction = map_dbl(x, tania_predict),
+    cerize_prediction = map_dbl(x, cerize_predict),
+    steffi_prediction = map_dbl(x, steffi_predict)
+  ) %>%
+  mutate(
+    tania_error = tania_prediction - y,
+    cerize_error = cerize_prediction - y,
+    steffi_error = steffi_prediction - y
+  ) %>% 
+  summarise(
+    mean_squared_tania_error = mean(tania_error^2),
+    mean_squared_cerize_error = mean(cerize_error^2),
+    mean_squared_steffi_error = mean(steffi_error^2),
+  )
+```
 
 Complication:
 
@@ -282,10 +382,15 @@ Say you want to predict a baseball player's salary using just their batting stat
 baseball_stats <- Batting %>%
   inner_join(Salaries) %>% 
   filter(yearID == 2005)
+
+?Batting
+
 baseball_stats
 ```
 
 ```{r}
+set.seed(1)
+
 training_set_players <- sample(baseball_stats$playerID, 600)
 
 training_set <- baseball_stats %>% 
@@ -296,13 +401,25 @@ test_set <- baseball_stats %>%
 ```
 
 ```{r}
-salary_model <- lm(salary~BB, training_set)
+training_set %>%
+  ggplot() +
+  geom_point(aes(x = BB, y = salary))
+
+salary_model <- lm(formula = salary~G+HR+H+IBB, data = training_set)
+
+salary_model
 
 summary(model)
+```
 
+
+```{r}
 training_set_with_predictions <- training_set %>%
   mutate(
-    predicted_salary = predict(salary_model, training_set)
+    predicted_salary = predict(
+      salary_model, 
+      training_set
+    )
   )
 
 training_set_with_predictions %>% 
@@ -315,8 +432,16 @@ training_set_with_predictions %>%
 
 training_set_with_predictions %>% 
   ggplot() +
-  geom_point(aes(x = BB, y = salary), color = "red", alpha = 0.5) +
-  geom_point(aes(x = BB, y = predicted_salary), color = "blue", alpha = 0.5) +
+  geom_point(
+    aes(x = BB, y = salary), 
+    color = "red", 
+    alpha = 0.5
+  ) +
+  geom_point(
+    aes(x = BB, y = predicted_salary), 
+    color = "blue", 
+    alpha = 0.5
+  ) +
   labs(title = "Predictions on the training set")
 ```
 
@@ -336,8 +461,54 @@ test_set_with_predictions %>%
 
 test_set_with_predictions %>% 
   ggplot() +
-  geom_point(aes(x = BB, y = salary), color = "red", alpha = 0.5) +
-  geom_point(aes(x = BB, y = predicted_salary), color = "blue", alpha = 0.5) +
+  geom_point(
+    aes(x = BB, y = salary), 
+    color = "red", 
+    alpha = 0.5
+  ) +
+  geom_point(
+    aes(x = BB, y = predicted_salary),
+    color = "blue", 
+    alpha = 0.5
+  ) +
   labs(title = "Predictions on the test set")
 ```
+
+```{r}
+zeinab_model <- lm(salary~BB + stint + G + AB + H + X2B + X3B + CS + IBB, training_set)
+
+steffi_model <- lm(salary~(H+HR+X2B+X3B)/AB, training_set)
+
+test_set %>%
+  mutate(
+    zeinab_prediction = predict(zeinab_model, test_set),
+    steffi_prediction = predict(steffi_model, test_set)
+  ) %>% 
+  mutate(
+    zeinab_test_error = zeinab_prediction - salary,
+    steffi_test_error = steffi_prediction - salary
+  ) %>% 
+  summarise(
+    zeinab_mean_squared_error = mean(zeinab_test_error^2),
+    steffi_mean_squared_error = mean(steffi_test_error^2)
+  )
+
+training_set %>%
+  mutate(
+    prediction = predict(salary_model, training_set)
+  ) %>% 
+  ggplot() +
+  geom_point(
+    aes(
+      x = prediction,
+      y = salary
+    ),
+    alpha = 0.5
+  )
+
+summary(steffi_model)
+```
+
+sklearn
+kaggle.com
 
