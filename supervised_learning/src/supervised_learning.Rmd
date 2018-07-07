@@ -29,16 +29,18 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Getting ready to play!
 
 1. In RStudio, open `supervised_learning.Rmd`, a file in `YOUR_FOLDER/data_science_workshops/supervised_learning/src/`. (That's this file!)
-2. In the code snippet below, remove the hashtags from both lines, and click the green "play" button on the right to install `dplyr`, `ggplot2`, and `titanic`, the three packages you'll need for the workshop.
+2. In the code snippet below, remove the hashtags from both lines, and click the green "play" button on the right to install `dplyr`, `ggplot2`, `purrr`, and `Lahman`, the four packages you'll need for the workshop.
 
 ```{r}
 #install.packages("dplyr")
 #install.packages("ggplot2")
-#install.packages("titanic")
+#install.packages("Lahman")
+#install.packages("purrr")
 
 library(dplyr)
 library(ggplot2)
-library(titanic)
+library(Lahman)
+library(purrr)
 ```
 
 ### Having installation problems?
@@ -54,12 +56,69 @@ Option 2b: Use [this datacamp light](https://cdn.datacamp.com/dcl/standalone-exa
 Based on the graphs below, how would you predict future values of $y$ knowing only the corresponding values of $x$?
 
 ```{r}
-df1 <- data_frame(
+df1_train <- data_frame(
+  x = c(0,1.1,2,3.3,4.4,5,6.2,7.7,8.1,9),
+  y = c(0,2.2,4,6.6,8.8,10,12.4,15.2,16.2,18)
+)
+
+df1_train %>% 
+  ggplot() +
+  geom_point(
+    aes(x = x, y = y)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0,20,2)
+  ) +
+  scale_x_continuous(
+    breaks = c(0,1,2,3,4,5,6,7,8,9,10)
+  ) +
+  labs(
+    title = "Graph 1"
+  )
+```
+
+```{r}
+predict1 <- function(x) {
+  return(2*x)
+}
+
+df1_test <- data_frame(
+  x = c(0.7, 3, 4, 5.7, 7.5)
+) %>% 
+  mutate(
+    y = map_dbl(x, predict1),
+    set = "test"
+  )
+
+df1_train %>%
+  mutate(set = "train") %>% 
+  bind_rows(df1_test) %>% 
+  ggplot() +
+  geom_point(
+    aes(x = x, y = y, color = set)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0,20,2)
+  ) +
+  scale_x_continuous(
+    breaks = c(0,1,2,3,4,5,6,7,8,9,10)
+  ) +
+  labs(
+    title = "Graph 1"
+  )
+```
+
+Complication:
+
+- What if there are breaks in the distribution that make it impossible to represent the prediction function with a linear equation?
+
+```{r}
+df2_train <- data_frame(
   x = c(0,1.4,2,3.7,4,5.1,6,7.5,8.4,9.7),
   y = c(1,1,1,1,1,3,3,3,3,3)
 )
 
-df1 %>% 
+df2_train %>% 
   ggplot() +
   geom_point(
     aes(x = x, y = y)
@@ -72,36 +131,50 @@ df1 %>%
     breaks = c(0,1,2,3,4,5,6,7,8,9,10)
   ) +
   labs(
-    title = "Graph 1"
-  )
-```
-
-```{r}
-df2 <- data_frame(
-  x = c(0,1.1,2,3.3,4.4,5,6.2,7.7,8.1,9),
-  y = c(0,2.2,4,6.6,8.8,10,12.4,15.2,16.2,18)
-)
-
-df2 %>% 
-  ggplot() +
-  geom_point(
-    aes(x = x, y = y)
-  ) +
-  scale_y_continuous(
-    breaks = seq(0,20,2)
-  ) +
-  scale_x_continuous(
-    breaks = c(0,1,2,3,4,5,6,7,8,9,10)
-  ) +
-  labs(
     title = "Graph 2"
   )
 ```
 
 ```{r}
+predict2 <- function(x) {
+  # Your answer here!
+}
+
+df2_test <- data_frame(
+  x = c(1, 2.2, 3, 5.5, 7, 9)
+) %>% 
+  mutate(
+    y = map_dbl(x, predict2),
+    set = "test"
+  )
+
+df2_train %>%
+  mutate(set = "train") %>% 
+  bind_rows(df2_test) %>% 
+  ggplot() +
+  geom_point(
+    aes(x = x, y = y, color = set)
+  ) +
+  scale_y_continuous(
+    limits = c(0,4),
+    breaks = c(0,1,2,3,4)
+  ) +
+  scale_x_continuous(
+    breaks = c(0,1,2,3,4,5,6,7,8,9,10)
+  ) +
+  labs(
+    title = "Graph 2 - with predictions"
+  )
+```
+
+Complication:
+
+- What if there are non-linearities in the data that make it difficult to define your function mathematically?
+
+```{r}
 df2 <- data_frame(
-  x = c(0,1.1,2,3.3,4.4,5,6.2,7.7,8.1,9),
-  y = c(1.1,1.3,0.9,0.87,8.8,8.4,7.4,6,6.4,6.9)
+  x = c(0,1.1,2,3.3,3.9,4.4,5,6.2,7.7,8.1,9),
+  y = c(1.1,1.8,0.9,0.87,4.1,8.8,8.4,7.4,6,6.4,6.9)
 )
 
 df2 %>% 
@@ -120,12 +193,90 @@ df2 %>%
   )
 ```
 
-## Supervised learning
+Complication:
 
-What it is
+- What if there is a source of error that causes equivalent inputs to have variable outputs?
 
-Why it's useful
+```{r}
+df2 <- data_frame(
+  x = rnorm(n = 100, mean = 10, sd = 3),
+) %>% 
+  mutate(
+    y = x^2 + rnorm(n = 100, mean = 0, sd = 30)
+  )
 
-How to do it
+df2 %>%
+  ggplot() +
+  geom_point(
+    aes(
+      x = x,
+      y = y
+    )
+  ) +
+  labs(title = "Graph 4")
+```
 
+Further complications:
+
+- What if there are multiple predictor variables, making it impossible to visualize the whole system at once?
+
+```{r}
+baseball_stats <- Batting %>%
+  inner_join(Salaries) %>% 
+  filter(yearID == 2005)
+
+training_set_players <- sample(baseball_stats$playerID, 600)
+
+training_set <- baseball_stats %>% 
+  filter(playerID %in% training_set_players)
+
+test_set <- baseball_stats %>% 
+  filter(!playerID %in% training_set_players)
+```
+
+```{r}
+salary_model <- lm(salary~BB, training_set)
+
+summary(model)
+
+training_set_with_predictions <- training_set %>%
+  mutate(
+    predicted_salary = predict(salary_model, training_set)
+  )
+
+training_set_with_predictions %>% 
+  mutate(
+    prediction_error = predicted_salary - salary
+  ) %>% 
+  summarise(
+    mean_squared_error = mean(prediction_error^2, na.rm = TRUE)
+  )
+
+training_set_with_predictions %>% 
+  ggplot() +
+  geom_point(aes(x = BB, y = salary), color = "red", alpha = 0.5) +
+  geom_point(aes(x = BB, y = predicted_salary), color = "blue", alpha = 0.5) +
+  labs(title = "Predictions on the training set")
+```
+
+```{r}
+test_set_with_predictions <- test_set %>%
+  mutate(
+    predicted_salary = predict(salary_model, test_set)
+  )
+
+test_set_with_predictions %>% 
+  mutate(
+    prediction_error = predicted_salary - salary
+  ) %>% 
+  summarise(
+    mean_squared_error = mean(prediction_error^2, na.rm = TRUE)
+  )
+
+test_set_with_predictions %>% 
+  ggplot() +
+  geom_point(aes(x = BB, y = salary), color = "red", alpha = 0.5) +
+  geom_point(aes(x = BB, y = predicted_salary), color = "blue", alpha = 0.5) +
+  labs(title = "Predictions on the test set")
+```
 
