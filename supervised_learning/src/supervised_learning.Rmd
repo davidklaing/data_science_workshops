@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Our virtual space:
 
-[https://todaysmeet.com/wwc_stats](https://todaysmeet.com/wwc_stats)****FIX
+[http://backchannelchat.com/Backchannel/l9yzy](http://backchannelchat.com/Backchannel/l9yzy)****FIX
 
 ### Getting this document on your computer:
 
@@ -51,9 +51,53 @@ Option 2a: Find a partner and follow along together — most of the exercises ca
 
 Option 2b: Use [this datacamp light](https://cdn.datacamp.com/dcl/standalone-example.html) page to write and execute code in your browser. (A couple caveats: doesn't come with the titanic data, and might end up distracting you from the lesson. If this is your first time programming, I recommend option 2a.)
 
-## Warm-up exercise (in pairs)
+## Supervised Learning
 
-Based on the graphs below, how would you predict future values of $y$ knowing only the corresponding values of $x$?
+In most programming:
+
+- Human writes a function, which allows the machine to take some data as an input and return some other data as an output.
+
+For example:
+
+```{r}
+add_one <- function(x) {
+  return(x + 1)
+}
+
+add_one(2)
+add_one(5)
+add_one(0)
+```
+
+In machine learning:
+
+- Human has a bunch of input-output pairs (like 2 and 3, 5 and 6, and 0 and 1), but doesn't know how to write a function that will transform the inputs into the outputs. So the human gives the input-output pairs to a machine learning algorithm, which learns the function we want!
+
+```{r}
+learned_function <- function(inputs, outputs, new_input) {
+  training_data <- data_frame(
+    input = inputs,
+    output = outputs
+  )
+  model <- lm(output~input, training_data)
+  new_input_data <- data_frame(
+    input = new_input
+  )
+  return(as.numeric(predict(model, new_input_data)))
+}
+
+learned_function(
+  inputs = c(2, 5, 0),
+  outputs = c(3, 6, 1),
+  new_input = 0
+)
+```
+
+Throughout this workshop, we'll work toward applying a machine learning algorithm like the one above. But we're going to start out by trying to learn the appropriate function with our own eyes. In other words, we are going to be the ones doing the supervising.
+
+## Exercise
+
+Based on the graph below, how would you predict future values of $y$ knowing only the corresponding values of $x$?
 
 ```{r}
 df1_train <- data_frame(
@@ -77,9 +121,11 @@ df1_train %>%
   )
 ```
 
+Write your function in the code snippet below.
+
 ```{r}
 predict1 <- function(x) {
-  return(2*x)
+  # Your answer here!
 }
 
 df1_test <- data_frame(
@@ -135,6 +181,10 @@ df2_train %>%
   )
 ```
 
+See if you can represent this new dataset with a different function.
+
+Hint: you will need to use an `if` clause.
+
 ```{r}
 predict2 <- function(x) {
   # Your answer here!
@@ -169,15 +219,44 @@ df2_train %>%
 
 Complication:
 
+- What if there is a source of error that causes equivalent inputs to have variable outputs?
+
+```{r}
+df3_train <- read.csv("../data/df3_train.csv")
+
+df3_train %>%
+  ggplot() +
+  geom_point(
+    aes(
+      x = x,
+      y = y
+    )
+  ) +
+  labs(title = "Graph 3")
+```
+
+By eyeballing the data, write your function in the snippet below. Once you're done, think about how you might evaluate the quality of your function. Can you come up with a measurement that you could use to compare your function to one written by someone else?
+
+```{r}
+predict3 <- function(x) {
+  # your function here!
+}
+
+# How could you evaluate the quality of your function??
+```
+
+
+Complication:
+
 - What if there are non-linearities in the data that make it difficult to define your function mathematically?
 
 ```{r}
-df2 <- data_frame(
+df4 <- data_frame(
   x = c(0,1.1,2,3.3,3.9,4.4,5,6.2,7.7,8.1,9),
   y = c(1.1,1.8,0.9,0.87,4.1,8.8,8.4,7.4,6,6.4,6.9)
 )
 
-df2 %>% 
+df4 %>% 
   ggplot() +
   geom_point(
     aes(x = x, y = y)
@@ -189,42 +268,24 @@ df2 %>%
     breaks = c(0,1,2,3,4,5,6,7,8,9,10)
   ) +
   labs(
-    title = "Graph 3"
+    title = "Graph 4"
   )
-```
-
-Complication:
-
-- What if there is a source of error that causes equivalent inputs to have variable outputs?
-
-```{r}
-df2 <- data_frame(
-  x = rnorm(n = 100, mean = 10, sd = 3),
-) %>% 
-  mutate(
-    y = x^2 + rnorm(n = 100, mean = 0, sd = 30)
-  )
-
-df2 %>%
-  ggplot() +
-  geom_point(
-    aes(
-      x = x,
-      y = y
-    )
-  ) +
-  labs(title = "Graph 4")
 ```
 
 Further complications:
 
 - What if there are multiple predictor variables, making it impossible to visualize the whole system at once?
 
+Say you want to predict a baseball player's salary using just their batting statistics:
+
 ```{r}
 baseball_stats <- Batting %>%
   inner_join(Salaries) %>% 
   filter(yearID == 2005)
+baseball_stats
+```
 
+```{r}
 training_set_players <- sample(baseball_stats$playerID, 600)
 
 training_set <- baseball_stats %>% 
