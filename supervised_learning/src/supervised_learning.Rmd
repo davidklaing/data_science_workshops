@@ -409,7 +409,7 @@ salary_model <- lm(formula = salary~G+HR+H+IBB, data = training_set)
 
 salary_model
 
-summary(model)
+summary(salary_model)
 ```
 
 
