@@ -49,14 +49,14 @@ Option 2b: Use [this datacamp light](https://cdn.datacamp.com/dcl/standalone-exa
 Executing code: move your cursor to the line you want to execute, and hit CTRL+ENTER
 
 ```{r}
-print("hello!")
-1+1
+print("hello women who code Vancouver!")
+1 + 1
 ```
 
 Looking up documentation about a function or object: prepend the name of the object with a question mark, and execute that line.
 
 ```{r}
-print
+?print
 ```
 
 ```{r}
@@ -116,18 +116,27 @@ unsupervised_magical_data %>%
 ```{r}
 ?kmeans
 
-kmeans_result <- kmeans(select(magical_data, -species), 3)
+unsupervised_magical_data
+
+kmeans_result <- kmeans(unsupervised_magical_data, 3)
+
+kmeans_result
 
 kmeans_result$cluster
 
 magical_data %>% 
   mutate(cluster = kmeans_result$cluster) %>% 
+  mutate(true_cluster = case_when(
+    species == "dwarf" ~ 1,
+    species == "giant" ~ 3,
+    species == "wizard" ~ 2
+  )) %>% 
+  mutate(misclassified = cluster != true_cluster) %>% 
   ggplot() +
   geom_point(
     aes(
       x = height,
-      y = magical_powers,
-      color = factor(species)
+      y = magical_powers
     )
   )
 ```
@@ -140,4 +149,20 @@ Steps:
 2. Initialize k random centroids (can choose points)
 3. Compute the distance from each point to the k centroids
 4. Assign each point to a group corresponding to its closest centroid
-5. Repeat steps 3 and 4 until the points no longer change groups.
+5. Reinitialize the k centroids by computing the mean of all points in its corresponding cluster
+6. Repeat steps 4 and 5 until the points no longer change groups.
+
+# Levels of difficulty
+
+Easiest: 3-means with a defined number of iterations
+
+Harder: 3-means with convergence criterion
+
+Hardest: k-means with convergence criterion
+
+```{r}
+?sample
+?pmap
+
+```
+
