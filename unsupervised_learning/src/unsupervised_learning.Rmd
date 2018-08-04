@@ -166,3 +166,165 @@ Hardest: k-means with convergence criterion
 
 ```
 
+```{r}
+compute_distance_to_centroid <- function(x1, x2, y1, y2) {
+  sqrt((x2 - x1)^2 + (y2 - y1)^2)
+}
+
+compute_distance_to_centroid(1,4,1,5)
+```
+
+
+```{r}
+assign_to_cluster <- function(x_val, y_val, centroid_df) {
+  centroid_df %>% 
+    mutate(
+      distance_to_centroid = pmap_dbl(
+        list(x_val, x, y_val, y),
+        compute_distance_to_centroid
+      )
+    ) %>% 
+    arrange(distance_to_centroid) %>% 
+    slice(1) %>% 
+    pull(cluster)
+}
+
+assign_to_cluster(
+  x_val = 1,
+  y_val = 2,
+  centroid_df = data_frame(
+    x = c(5, 1, 9),
+    y = c(6, 3, 2),
+    cluster = c(1, 2, 3)
+  )
+)
+```
+
+```{r}
+my_kmeans <- function(x, y, k, max_iter = 10) {
+  df <- data_frame(x, y)
+  initial_centroid_indices <- sample(seq(1:nrow(df)), size = k)
+  initial_centroids <- df %>% 
+    slice(initial_centroid_indices) %>% 
+    mutate(cluster = 1:k)
+  initial_clusters <- df %>%
+    mutate(
+      cluster = pmap_int(
+        list(x_val = x, y_val = y),
+        assign_to_cluster,
+        centroid_df = initial_centroids
+      )
+    )
+  new_centroids <- initial_clusters %>% 
+    group_by(cluster) %>% 
+    summarise(
+      x = mean(x),
+      y = mean(y)
+    ) %>% 
+    select(x, y, cluster)
+  old_centroids <- initial_centroids
+  counter <- 1
+  while (!all(new_centroids == old_centroids) & counter < max_iter) {
+    old_centroids <- new_centroids
+    new_clusters <- df %>% 
+      mutate(
+        cluster = pmap_int(
+          list(x_val = x, y_val = y),
+          assign_to_cluster,
+          centroid_df = new_centroids
+        )
+      )
+    new_centroids <- new_clusters %>% 
+      group_by(cluster) %>% 
+      summarise(
+        x = mean(x),
+        y = mean(y)
+      )
+    counter <- counter + 1
+  }
+  return(new_clusters)
+}
+```
+
+```{r}
+learned_clusters <- my_kmeans(
+  x = magical_data$height, 
+  y = magical_data$magical_powers, 
+  k = 4
+) %>% 
+  pull(cluster)
+
+magical_data %>% 
+  mutate(cluster = learned_clusters) %>% 
+  ggplot() +
+  geom_point(
+    aes(
+      x = height,
+      y = magical_powers,
+      color = factor(cluster)
+    )
+  )
+```
+
+```{r}
+new_kmeans <- function(df, k) {
+  
+}
+
+general_assign_to_cluster <- function(data_df, centers_df) {
+  clusters <- expand.grid(
+    point_index = 1:nrow(data_df),
+    center_index = 1:nrow(centers_df)
+  ) %>% 
+    mutate(
+      data_coordinates = map(point_index, get_coordinates, data_df),
+      center_coordinates = map(center_index, get_coordinates, centers_df)
+    ) %>% 
+    mutate(
+      distance = map2_dbl(
+        data_coordinates,
+        center_coordinates,
+        get_general_distance
+      )
+    ) %>% 
+    group_by(point_index) %>% 
+    filter(distance == min(distance)) %>% 
+    ungroup() %>% 
+    arrange(point_index) %>% 
+    pull(center_index)
+  
+  data_df %>% 
+    mutate(cluster = clusters)
+}
+
+general_assign_to_cluster(
+  unsupervised_magical_data, 
+  slice(unsupervised_magical_data, sample(1:nrow(unsupervised_magical_data), 3))
+)
+
+get_coordinates <- function(index, df) {
+  t(slice(df, index))
+}
+
+get_general_distance <- function(v1, v2) {
+  sqrt(sum((v1 - v2)^2))
+}
+
+get_general_distance(v1 = c(0,1,1), v2 = c(1,4,5))
+
+magical_data %>% slice(1) %>% select_if(is.numeric) %>% t()
+```
+
+
+# Recap
+
+Workshop 1: data wrangling
+
+Workshop 2: data visualization: [https://github.com/hadinh1306/workshop-materials](https://github.com/hadinh1306/workshop-materials)
+
+Workshop 3: statistics
+
+Workshop 4: supervised learning
+
+Workshop 5: unsupervised learning
+
