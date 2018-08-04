@@ -82,13 +82,18 @@ generate_magical_powers <- function(species) {
   }
 }
 
-data_frame(
+magical_data <- data_frame(
   species = sample(c("wizard", "dwarf", "giant"), 100, replace = TRUE)
 ) %>% 
   mutate(
     height = map_dbl(species, generate_height),
     magical_powers = map_dbl(species, generate_magical_powers)
-  ) %>% 
+  )
+
+unsupervised_magical_data <- magical_data %>% 
+  select(height, magical_powers)
+
+magical_data %>% 
   ggplot() +
   geom_point(
     aes(
@@ -97,5 +102,42 @@ data_frame(
       color = species
     )
   )
+
+unsupervised_magical_data %>% 
+  ggplot() +
+  geom_point(
+    aes(
+      x = height,
+      y = magical_powers
+    )
+  )
 ```
 
+```{r}
+?kmeans
+
+kmeans_result <- kmeans(select(magical_data, -species), 3)
+
+kmeans_result$cluster
+
+magical_data %>% 
+  mutate(cluster = kmeans_result$cluster) %>% 
+  ggplot() +
+  geom_point(
+    aes(
+      x = height,
+      y = magical_powers,
+      color = factor(species)
+    )
+  )
+```
+
+# Implement k-means!
+
+Steps:
+
+1. Choose k
+2. Initialize k random centroids (can choose points)
+3. Compute the distance from each point to the k centroids
+4. Assign each point to a group corresponding to its closest centroid
+5. Repeat steps 3 and 4 until the points no longer change groups.
